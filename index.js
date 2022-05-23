@@ -23,12 +23,19 @@ async function run() {
           await client.connect();
 
           const serviceCollection = client.db('tools_menu').collection('services')
+          const addressCollection = client.db('tools_menu').collection('address')
 
           app.get('/service', async (req, res) => {
                const query = {};
                const cursor = serviceCollection.find(query);
                const services = await cursor.toArray();
                res.send(services);
+          });
+
+          app.post('/address', async (req, res) => {
+               const address = req.body;
+               const result = await addressCollection.insertOne(address);
+               res.send(result)
           })
      }
      finally {
