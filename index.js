@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -41,6 +41,7 @@ async function run() {
           const serviceCollection = client.db('tools_menu').collection('services');
           const addressCollection = client.db('tools_menu').collection('address');
           const userCollection = client.db('tools_menu').collection('users');
+          const productCollection = client.db('tools_menu').collection('product');
 
           app.get('/service', async (req, res) => {
                const query = {};
@@ -110,6 +111,27 @@ async function run() {
                const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
                res.send({ result, token })
           })
+
+          // product send mongodb
+          app.get('/product', async (req, res) => {
+               const products = await productCollection.find().toArray();
+               res.send(products)
+          })
+
+
+          app.post('/product', async (req, res) => {
+               const product = req.body;
+               const result = await productCollection.insertOne(product);
+               res.send(result)
+          })
+
+          app.delete('/product/:id', async (req, res) => {
+               const id = req.params.id;
+               const filter = { _id: ObjectId(id) };
+               const result = await productCollection.deleteOne(filter);
+               res.send(result)
+          })
+
      }
      finally {
 
