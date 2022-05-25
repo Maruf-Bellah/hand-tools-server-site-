@@ -3,6 +3,9 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const stripe = require('stripe')('sk_test_51L11fvB2zxg55EDcSummXPTNSsGPVntgGTHbkrcJXftpdFtaSFBuXlO7q4wZZIoVQcWwvuNMhA5I0mNFs0eIjMbe00PVBwlVe6')
+
+
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -79,6 +82,7 @@ async function run() {
           })
 
 
+
           // address here 
 
           app.post('/address', async (req, res) => {
@@ -92,13 +96,37 @@ async function run() {
                res.send(address);
           })
 
+          app.get('/address/:id', async (req, res) => {
+               const id = req.params.id;
+               const query = { _id: ObjectId(id) };
+               const payment = await addressCollection.findOne(query);
+               res.send(payment);
+
+          })
+
+          /*    app.post('/create-payment-intent', async (req, res) => {
+                  const address = req.body;
+                  const price = address.price;
+                  const amount = price * 100;
+                  const paymentIntent = await stripe.paymentIntents.create({
+                       amount: amount,
+                       currency: 'usd',
+                       payment_method_type: ['card']
+                  });
+                  res.send({ clientSecret: paymentIntent.client_secret })
+             })
+    */
+
+
+
+
 
           app.delete('/address/:id', async (req, res) => {
                const id = req.params.id;
                const filter = { _id: ObjectId(id) };
                const result = await addressCollection.deleteOne(filter);
                res.send(result)
-          })
+          });
 
           // all users
           app.get('/user', async (req, res) => {
