@@ -42,6 +42,7 @@ async function run() {
           const addressCollection = client.db('tools_menu').collection('address');
           const userCollection = client.db('tools_menu').collection('users');
           const productCollection = client.db('tools_menu').collection('product');
+          const reviewCollection = client.db('tools_menu').collection('review');
 
           app.get('/service', async (req, res) => {
                const query = {};
@@ -65,11 +66,40 @@ async function run() {
 
           });
 
+          // review here 
+          app.post('/review', async (req, res) => {
+               const review = req.body;
+               const result = await reviewCollection.insertOne(review);
+               res.send(result)
+          })
+
+          app.get('/review', async (req, res) => {
+               const review = await reviewCollection.find().toArray();
+               res.send(review)
+          })
+
+
+          // address here 
+
           app.post('/address', async (req, res) => {
                const address = req.body;
                const result = await addressCollection.insertOne(address);
                res.send(result)
           })
+
+          app.get('/address', async (req, res) => {
+               const address = await addressCollection.find().toArray();
+               res.send(address);
+          })
+
+
+          app.delete('/address/:id', async (req, res) => {
+               const id = req.params.id;
+               const filter = { _id: ObjectId(id) };
+               const result = await addressCollection.deleteOne(filter);
+               res.send(result)
+          })
+
           // all users
           app.get('/user', async (req, res) => {
                const users = await userCollection.find().toArray();
