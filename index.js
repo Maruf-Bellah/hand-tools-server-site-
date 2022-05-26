@@ -46,6 +46,7 @@ async function run() {
           const userCollection = client.db('tools_menu').collection('users');
           const productCollection = client.db('tools_menu').collection('product');
           const reviewCollection = client.db('tools_menu').collection('review');
+          const profileCollection = client.db('tools_menu').collection('profile');
 
           app.get('/service', async (req, res) => {
                const query = {};
@@ -81,6 +82,34 @@ async function run() {
                res.send(review)
           })
 
+          // myProfile here
+          app.post('/profile', async (req, res) => {
+               const profile = req.body;
+               const result = await profileCollection.insertOne(profile);
+               res.send(result)
+          })
+
+
+          app.put('/profile', async (req, res) => {
+               // const id = req.params.id;
+               const updatedUser = req.body;
+               const filter = { updatedUser };
+               // const options = { upsert: true };
+               const updateDoc = {
+                    $set: {
+                         name: updatedUser.name,
+                         email: updatedUser.email,
+                         phone: updatedUser.phone,
+                         education: updatedUser.education,
+                         location: updatedUser.location,
+                         city: updatedUser.city
+
+                    }
+
+               };
+               const result = await userCollection.updateMany(filter, updateDoc);
+               res.send(result)
+          })
 
 
           // address here 
