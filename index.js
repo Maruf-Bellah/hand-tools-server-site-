@@ -89,12 +89,24 @@ async function run() {
                res.send(result)
           })
 
+          app.get('/profile', async (req, res) => {
+               const profile = await profileCollection.find().toArray();
+               res.send(profile)
+          })
 
-          app.put('/profile', async (req, res) => {
-               // const id = req.params.id;
+          app.get('/profile/:id', async (req, res) => {
+               const id = req.params.id;
+               const query = { _id: ObjectId(id) };
+               const profile = await profileCollection.findOne(query);
+               res.send(profile)
+          })
+
+
+          app.put('/profile/:id', async (req, res) => {
+               const id = req.params.id;
                const updatedUser = req.body;
                const filter = { updatedUser };
-               // const options = { upsert: true };
+               const options = { upsert: true };
                const updateDoc = {
                     $set: {
                          name: updatedUser.name,
@@ -107,7 +119,7 @@ async function run() {
                     }
 
                };
-               const result = await userCollection.updateMany(filter, updateDoc);
+               const result = await userCollection.updateMany(filter, updateDoc, options);
                res.send(result)
           })
 
