@@ -145,6 +145,7 @@ async function run() {
 
           })
 
+          // this not work now 
           /*    app.post('/create-payment-intent', async (req, res) => {
                   const address = req.body;
                   const price = address.price;
@@ -157,9 +158,6 @@ async function run() {
                   res.send({ clientSecret: paymentIntent.client_secret })
              })
     */
-
-
-
 
 
           app.delete('/address/:id', async (req, res) => {
